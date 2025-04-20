@@ -2,14 +2,17 @@ const Pokemon = require("../model/pokemon");
 
 const getPokemon = async (req, res) => {
   try {
-    const pokemonTask = Pokemon.find({
-      type: {
-        $regex: req.query.type,
-        $options: "i",
-      }
-    })
+
+    const { type } = req.query
+    const searchObjects = {}
+
+    if (type) {
+      searchObjects.type = type
+    }
+
+    const pokemonTask = Pokemon.find(searchObjects)
     const page = Number(req.query.page) || 1
-    const limit = Number(req.query.limit) || 20
+    const limit = Number(req.query.limit) || 10
 
     const data = await pokemonTask
       .skip((page - 1) * limit).limit(limit).select('-_id -__v')
@@ -50,6 +53,10 @@ const getSinglePokemon = async (req, res) => {
   try {
     const data = await Pokemon.
       find({ id: Number(req.params.id) }).select('-_id -__v')
+
+    if (data.length === 0) {
+      return res.status(404).json({ success: false, msg: 'Pokemon not found' })
+    }
 
     res.status(200).json({ success: true, data })
   } catch (error) {
