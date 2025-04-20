@@ -1,6 +1,6 @@
 const Pokemon = require("../model/pokemon");
 
-const getPokemon = async (req, res) => {
+const getPokemon = async (req, res, next) => {
   try {
     const pokemonTask = Pokemon.find({
       type: {
@@ -20,7 +20,7 @@ const getPokemon = async (req, res) => {
   }
 }
 
-const searchPokemon = async (req, res) => {
+const searchPokemon = async (req, res, next) => {
   try {
     const data = await Pokemon.find({
       name: {
@@ -34,7 +34,7 @@ const searchPokemon = async (req, res) => {
   }
 }
 
-const getRandomPokemon = async (req, res) => {
+const getRandomPokemon = async (req, res, next) => {
   try {
     const randomIndex = Math.floor(Math.random() * 1025)
     const data = await Pokemon
@@ -46,7 +46,7 @@ const getRandomPokemon = async (req, res) => {
   }
 };
 
-const getSinglePokemon = async (req, res) => {
+const getSinglePokemon = async (req, res, next) => {
   try {
     const data = await Pokemon.
       find({ id: Number(req.params.id) }).select('-_id -__v')
